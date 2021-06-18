@@ -8,8 +8,12 @@
     <title>Conversão de bases</title>
     <script type="text/javascript" src="jquery-3.6.0.min.js"></script>
     <style>
-        span {
+        .u {
             text-decoration: underline;
+        }
+
+        .d {
+            color: #f00;
         }
     </style>
 </head>
@@ -22,7 +26,45 @@
         </pre>
     </div>
     <script type="text/javascript">
-        var digitos = ["0", "1", "2", "3", "4", "5", "6", "7", "8", "9", "a", "b", "c", "d", "e", "f", "g", "h", "i", "j", "k", "l", "m", "n", "o", "p", "q", "r", "s", "t", "u", "v", "w", "x", "y", "z"];
+        var digitos = {
+            "0": 0,
+            "1": 1,
+            "2": 2,
+            "3": 2,
+            "4": 4,
+            "5": 5,
+            "6": 6,
+            "7": 7,
+            "8": 8,
+            "9": 9,
+            "a": 10,
+            "b": 11,
+            "c": 12,
+            "d": 13,
+            "e": 14,
+            "f": 15,
+            "g": 16,
+            "h": 17,
+            "i": 18,
+            "j": 19,
+            "k": 20,
+            "l": 21,
+            "m": 22,
+            "n": 23,
+            "o": 24,
+            "p": 25,
+            "q": 26,
+            "r": 27,
+            "s": 28,
+            "t": 29,
+            "u": 30,
+            "v": 31,
+            "w": 32,
+            "x": 33,
+            "y": 34,
+            "z": 35
+        };
+        var caracteres = ["0", "1", "2", "3", "4", "5", "6", "7", "8", "9", "a", "b", "c", "d", "e", "f", "g", "h", "i", "j", "k", "l", "m", "n", "o", "p", "q", "r", "s", "t", "u", "v", "w", "x", "y", "z"];
         $("#numero").keyup(function() {
             calculaConversao();
         });
@@ -45,17 +87,17 @@
             $("#resposta").html('');
             let digito = "0";
             if (nBase10 == 0) {
-                $("#resposta").append(espaco + " " + nBase10 + " |<span>" + base + " </span>\n");
-                $("#resposta").append(espaco + "'" + digito + "' " + nBase10 + "\n");
+                $("#resposta").append(espaco + " " + nBase10 + " |<span class='u'>" + base + " </span>\n");
+                $("#resposta").append(espaco + " <span class='d'>" + digito + "</span>  " + nBase10 + "\n");
                 resultado = "0";
             }
             while (nBase10 > 0) {
 
-                digito = digitos[nBase10 % base];
+                digito = caracteres[nBase10 % base];
                 resultado += digito;
+                $("#resposta").append(espaco + nBase10 + "|<span class='u'>" + base + " </span>\n");
                 nBase10 = (nBase10 - nBase10 % base) / base;
-                $("#resposta").append(espaco + " " + nBase10 + " |<span>" + base + " </span>\n");
-                $("#resposta").append(espaco + "'" + digito + "' " + nBase10 + "\n");
+                $("#resposta").append(espaco + "<span class='d'>" + digito + "</span>  " + nBase10 + "\n");
                 espaco += "    ";
             }
 
