@@ -43,20 +43,24 @@
             let espaco = "";
             let loop = true;
             $("#resposta").html('');
-                let digito = "";
-                while (loop) {
-                    if (nBase10 == 0) {
-                        loop = false;
-                    }
-                    digito = digitos[nBase10 % base];
-                    resultado += digito;
-                    nBase10 = (nBase10 - nBase10 % base) / base;
-                    $("#resposta").append(espaco + " " + digito + " |<span>" + base + " </span>\n");
-                    $("#resposta").append(espaco + "'" + digito + "' " + nBase10 + "\n");
-                    espaco += "    ";
-                }
+            let digito = "0";
+            if (nBase10 == 0) {
+                $("#resposta").append(espaco + " " + nBase10 + " |<span>" + base + " </span>\n");
+                $("#resposta").append(espaco + "'" + digito + "' " + nBase10 + "\n");
+                resultado = "0";
+            }
+            while (nBase10 > 0) {
 
-            $("#resposta").append("<br>"+resultado + "<br><br>");
+                digito = digitos[nBase10 % base];
+                resultado += digito;
+                nBase10 = (nBase10 - nBase10 % base) / base;
+                $("#resposta").append(espaco + " " + nBase10 + " |<span>" + base + " </span>\n");
+                $("#resposta").append(espaco + "'" + digito + "' " + nBase10 + "\n");
+                espaco += "    ";
+            }
+
+
+            $("#resposta").append("<br>" + resultado + "<br><br>");
             $("#resposta").append("Base" + base + ": " + resultado.split("").reverse().join("") + "<br>");
         }
     </script>
