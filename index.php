@@ -19,8 +19,9 @@
 </head>
 
 <body>
+    <h1> Conversão de bases, de Binario até Tetrasexagesimal</h1>
     Número na base 10: <input id="numero" type="number" placeholder="base10"><br>
-    Base para Conversão: <input id="base" type="number" placeholder="base" min="2" max="36" value="2">
+    Base para Conversão: <input id="base" type="number" placeholder="base" min="2" max="64" value="2">
     <div>
         <pre id="resposta">
         </pre>
@@ -37,34 +38,62 @@
             "7": 7,
             "8": 8,
             "9": 9,
-            "a": 10,
-            "b": 11,
-            "c": 12,
-            "d": 13,
-            "e": 14,
-            "f": 15,
-            "g": 16,
-            "h": 17,
-            "i": 18,
-            "j": 19,
-            "k": 20,
-            "l": 21,
-            "m": 22,
-            "n": 23,
-            "o": 24,
-            "p": 25,
-            "q": 26,
-            "r": 27,
-            "s": 28,
-            "t": 29,
-            "u": 30,
-            "v": 31,
-            "w": 32,
-            "x": 33,
-            "y": 34,
-            "z": 35
+            "A": 10,
+            "B": 11,
+            "C": 12,
+            "D": 13,
+            "E": 14,
+            "F": 15,
+            "G": 16,
+            "H": 17,
+            "I": 18,
+            "J": 19,
+            "K": 20,
+            "L": 21,
+            "M": 22,
+            "N": 23,
+            "O": 24,
+            "P": 25,
+            "Q": 26,
+            "R": 27,
+            "S": 28,
+            "T": 29,
+            "U": 30,
+            "V": 31,
+            "W": 32,
+            "X": 33,
+            "Y": 34,
+            "Z": 35,
+            "a": 36,
+            "b": 37,
+            "c": 38,
+            "d": 39,
+            "e": 40,
+            "f": 41,
+            "g": 42,
+            "h": 43,
+            "i": 44,
+            "j": 45,
+            "k": 46,
+            "l": 47,
+            "m": 48,
+            "n": 49,
+            "o": 50,
+            "p": 51,
+            "q": 52,
+            "r": 53,
+            "s": 54,
+            "t": 55,
+            "u": 56,
+            "v": 57,
+            "w": 58,
+            "x": 59,
+            "y": 60,
+            "z": 61,
+            "+": 62,
+            "/": 63
         };
-        var caracteres = ["0", "1", "2", "3", "4", "5", "6", "7", "8", "9", "a", "b", "c", "d", "e", "f", "g", "h", "i", "j", "k", "l", "m", "n", "o", "p", "q", "r", "s", "t", "u", "v", "w", "x", "y", "z"];
+        var caracteres = ["0", "1", "2", "3", "4", "5", "6", "7", "8", "9", "A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M", "N", "O", "P", "Q", "R", "S", "T", "U", "V", "W", "X", "Y", "Z", "a", "b", "c", "d", "e", "f", "g", "h", "i", "j", "k", "l", "m", "n", "o", "p", "q", "r", "s", "t", "u", "v", "w", "x", "y", "z", "+", "/"];
         $("#numero").keyup(function() {
             calculaConversao();
         });
@@ -84,26 +113,31 @@
             let resultado = "";
             let espaco = "";
             let loop = true;
+            let sinal = "";
             $("#resposta").html('');
             let digito = "0";
+            if (nBase10 < 0) {
+                nBase10 = -nBase10;
+                sinal = "-";
+            }
             if (nBase10 == 0) {
                 $("#resposta").append(espaco + " " + nBase10 + " |<span class='u'>" + base + " </span>\n");
                 $("#resposta").append(espaco + " <span class='d'>" + digito + "</span>  " + nBase10 + "\n");
                 resultado = "0";
             }
-            while (nBase10 > 0) {
+            while (nBase10 > 0 && base >= 2 && base <=64) {
 
                 digito = caracteres[nBase10 % base];
                 resultado += digito;
-                $("#resposta").append(espaco + nBase10 + "|<span class='u'>" + base + " </span>\n");
+                $("#resposta").append(espaco + sinal + nBase10 + "|<span class='u'>" + base + " </span>\n");
                 nBase10 = (nBase10 - nBase10 % base) / base;
-                $("#resposta").append(espaco + "<span class='d'>" + digito + "</span>  " + nBase10 + "\n");
-                espaco += "    ";
+                $("#resposta").append(espaco + "<span class='d'>" + digito + "</span>  " + sinal + nBase10 + "\n");
+                espaco += "   ";
             }
 
 
             $("#resposta").append("<br>" + resultado + "<br><br>");
-            $("#resposta").append("Base" + base + ": " + resultado.split("").reverse().join("") + "<br>");
+            $("#resposta").append("Base" + base + ": " + sinal + resultado.split("").reverse().join("") + "<br>");
         }
     </script>
 </body>
