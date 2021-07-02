@@ -1,4 +1,5 @@
-# converte-base-10-em-qualquer-base-maior-que-2 até a base 64
+# consão de bases
+o programa é capaz de converter da base decimal em qualquer outra base entre 2 e 24
 sketch reponsavel por converter numeros decimais para qualquer base entre 2 e 64
 
 
