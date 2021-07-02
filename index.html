@@ -105,7 +105,7 @@
         $("#numeroBaseX").mask("Z", {
             translation: {
                 'Z': {
-                    pattern: /[a-zA-Z0-9+/]/,
+                    pattern: /[a-zA-Z0-9+/-]/,
                     recursive: true
                 }
             }
@@ -123,7 +123,6 @@
         $("#baseX").change(function() {
             calculaConversaoBxB10();
         });
-
         $("#numero").keyup(function() {
             calculaConversaoB10Bx();
         });
@@ -138,7 +137,6 @@
         });
 
         function calculaConversaoB10Bx(nb10 = null, bx = null, calcularProxima = true) {
-            console.log(bx);
             let base;
             let nBase10;
 
@@ -166,9 +164,7 @@
                 sinal = "-";
             }
             if (nBase10 == 0) {
-                if (nBase10 !== 0) {
-                    return;
-                }
+                nBase10 = 0;
                 $("#resposta").append(espaco + " " + nBase10 + " |<span class='u'>" + base + " </span>\n");
                 $("#resposta").append(espaco + " <span class='d'>" + digito + "</span>  " + nBase10 + "\n");
                 resultado = "0";
@@ -187,8 +183,9 @@
             $("#resposta").append("<br>" + resultado + "<br><br>");
             $("#resposta").append("Base" + base + ": " + sinal + resultado.split("").reverse().join("") + "<br>");
             if (calcularProxima) {
-                calculaConversaoBxB10(resultado.split("").reverse().join(""), base, false);
+                calculaConversaoBxB10(sinal + resultado.split("").reverse().join(""), base, false);
             }
+            return sinal + resultado.split("").reverse().join("");
         }
 
         function calculaConversaoBxB10(nbx = null, bx = null, calcularProxima = true) {
@@ -207,29 +204,71 @@
             $("#resposta2").html('');
             let resultado = 0;
             let subRes = 0;
-            for (let i = 0; i < nbx.length; i++) {
-                if (digitos[nbx[i]] >= bx) {
-                    let maiorCaracter = 0;
-                    for (let j = 0; j < nbx.length; j++) {
-                        if (digitos[nbx[j]] > maiorCaracter) {
-                            maiorCaracter = digitos[nbx[j]];
-                        }
-                    }
-                    $("#baseX").val(maiorCaracter + 1);
-                    $("#resposta2").html('');
-                    bx = maiorCaracter + 1;
-                    i = 0;
+            let sinal = 1;
+            if (nbx[nbx.length - 1] == "-") {
+                nbx.splice(nbx.length - 1, 1);
+                sinal *= -1;
+            }
+            let maiorCaracter = 0;
+            for (let j = 0; j < nbx.length; j++) {
+                if (digitos[nbx[j]] > maiorCaracter) {
+                    maiorCaracter = digitos[nbx[j]];
                 }
-
+            }
+            if (maiorCaracter >= bx) {
+                $("#baseX").val(maiorCaracter + 1);
+                $("#resposta2").html('');
+                bx = maiorCaracter + 1;
+            }
+            for (let i = 0; i < nbx.length; i++) {
                 subRes = digitos[nbx[i]] * Math.pow(bx, i);
                 $("#resposta2").append("'" + nbx[i] + "' x " + bx + "^<span class='d'>" + i + " </span>= " + subRes + " \n");
                 resultado += subRes;
             }
-            $("#resposta2").append("\ntotal: <span class='d'>" + resultado + " </span> \n");
+            $("#resposta2").append("\ntotal: <span class='d'>" + sinal * resultado + " </span> \n");
             if (calcularProxima) {
-                calculaConversaoB10Bx(resultado, bx, false);
+                calculaConversaoB10Bx(sinal * resultado, bx, false);
+            }
+            return sinal * resultado;
+        }
+
+        function bxb10(nbx, bx) {
+            nbx = nbx.toString().split("").reverse();
+            let sinal = 1;
+            if (nbx[nbx.length - 1] == "-") {
+                nbx.splice(nbx.length - 1, 1);
+                sinal *= -1;
+            }
+            let resultado = 0;
+            for (let i = 0; i < nbx.length; i++) {
+                resultado += digitos[nbx[i]] * Math.pow(bx, i);
+            }
+            return sinal * resultado;
+        }
+
+        function b10bx(nb10, bx) {
+            let resultado = "";
+            let sinal = "";
+            if (nb10 == 0) {
+                return 0;
+            }
+            if (nb10 < 0) {
+                sinal = "-";
             }
 
+            while (nb10 > 0 && bx >= 2 && bx <= 64) {
+                resultado += caracteres[nb10 % bx];
+                nb10 = (nb10 - nb10 % bx) / bx;
+            }
+            return sinal + resultado.split("").reverse().join("");
+        }
+
+        function bxby(nbx, bx, by, printa = true) {
+            if (printa) {
+                return calculaConversaoB10Bx(calculaConversaoBxB10(nbx, bx, false), by, false) // escreve na tela
+            } else {
+                return b10bx(bxb10(nbx, bx), by);
+            }
         }
     </script>
 </body>
