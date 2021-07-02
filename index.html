@@ -7,11 +7,12 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Conversão de bases</title>
     <script type="text/javascript" src="jquery-3.6.0.min.js"></script>
+    <script type="text/javascript" src="jquery.mask.min.js"></script>
     <style>
         .u {
             text-decoration: underline;
         }
-
+        
         .d {
             color: #f00;
         }
@@ -19,11 +20,18 @@
 </head>
 
 <body>
-    <h1> Conversão de bases, de Binario até Tetrasexagesimal</h1>
-    Número na base 10: <input id="numero" type="number" placeholder="base10"><br>
-    Base para Conversão: <input id="base" type="number" placeholder="base" min="2" max="64" value="2">
+    <h1> Conversão de bases, de decimal para bases de Binario até Tetrasexagesimal</h1>
+    Número na base 10: <input id="numero" type="number" placeholder="base10">
+    <br> Base para Conversão: <input id="base" type="number" placeholder="base" min="2" max="64" value="2">
     <div>
         <pre id="resposta">
+        </pre>
+    </div>
+    <h1> Conversão de bases, de bases Binario até Tetrasexagesimal para decimal</h1>
+    Número na base escolhida: <input id="numeroBaseX" type="text" placeholder="base10">
+    <br> Base para Conversão: <input id="baseX" type="number" placeholder="base" min="2" max="64" value="2">
+    <div>
+        <pre id="resposta2">
         </pre>
     </div>
     <script type="text/javascript">
@@ -31,7 +39,7 @@
             "0": 0,
             "1": 1,
             "2": 2,
-            "3": 2,
+            "3": 3,
             "4": 4,
             "5": 5,
             "6": 6,
@@ -94,22 +102,59 @@
             "/": 63
         };
         var caracteres = ["0", "1", "2", "3", "4", "5", "6", "7", "8", "9", "A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M", "N", "O", "P", "Q", "R", "S", "T", "U", "V", "W", "X", "Y", "Z", "a", "b", "c", "d", "e", "f", "g", "h", "i", "j", "k", "l", "m", "n", "o", "p", "q", "r", "s", "t", "u", "v", "w", "x", "y", "z", "+", "/"];
-        $("#numero").keyup(function() {
-            calculaConversao();
-        });
-        $("#numero").change(function() {
-            calculaConversao();
-        });
-        $("#base").keyup(function() {
-            calculaConversao();
-        });
-        $("#base").change(function() {
-            calculaConversao();
+        $("#numeroBaseX").mask("Z", {
+            translation: {
+                'Z': {
+                    pattern: /[a-zA-Z0-9+/]/,
+                    recursive: true
+                }
+            }
         });
 
-        function calculaConversao() {
-            let base = $("#base").val();
-            let nBase10 = $("#numero").val();
+        $("#numeroBaseX").keyup(function() {
+            calculaConversaoBxB10();
+        });
+        $("#numeroBaseX").change(function() {
+            calculaConversaoBxB10();
+        });
+        $("#baseX").keyup(function() {
+            calculaConversaoBxB10();
+        });
+        $("#baseX").change(function() {
+            calculaConversaoBxB10();
+        });
+
+        $("#numero").keyup(function() {
+            calculaConversaoB10Bx();
+        });
+        $("#numero").change(function() {
+            calculaConversaoB10Bx();
+        });
+        $("#base").keyup(function() {
+            calculaConversaoB10Bx();
+        });
+        $("#base").change(function() {
+            calculaConversaoB10Bx();
+        });
+
+        function calculaConversaoB10Bx(nb10 = null, bx = null, calcularProxima = true) {
+            console.log(bx);
+            let base;
+            let nBase10;
+
+            if (nb10 == null) {
+                nBase10 = $("#numero").val();
+            } else {
+                $("#numero").val(nb10);
+                nBase10 = nb10;
+            }
+            if (bx == null) {
+                base = $("#base").val();
+            } else {
+                $("#base").val(bx);
+                base = bx;
+            }
+
             let resultado = "";
             let espaco = "";
             let loop = true;
@@ -121,11 +166,14 @@
                 sinal = "-";
             }
             if (nBase10 == 0) {
+                if (nBase10 !== 0) {
+                    return;
+                }
                 $("#resposta").append(espaco + " " + nBase10 + " |<span class='u'>" + base + " </span>\n");
                 $("#resposta").append(espaco + " <span class='d'>" + digito + "</span>  " + nBase10 + "\n");
                 resultado = "0";
             }
-            while (nBase10 > 0 && base >= 2 && base <=64) {
+            while (nBase10 > 0 && base >= 2 && base <= 64) {
 
                 digito = caracteres[nBase10 % base];
                 resultado += digito;
@@ -138,6 +186,50 @@
 
             $("#resposta").append("<br>" + resultado + "<br><br>");
             $("#resposta").append("Base" + base + ": " + sinal + resultado.split("").reverse().join("") + "<br>");
+            if (calcularProxima) {
+                calculaConversaoBxB10(resultado.split("").reverse().join(""), base, false);
+            }
+        }
+
+        function calculaConversaoBxB10(nbx = null, bx = null, calcularProxima = true) {
+
+            if (nbx == null) {
+                nbx = $("#numeroBaseX").val();
+            } else {
+                $("#numeroBaseX").val(nbx);
+            }
+            if (bx == null) {
+                bx = $("#baseX").val();
+            } else {
+                $("#baseX").val(bx);
+            }
+            nbx = nbx.toString().split("").reverse();
+            $("#resposta2").html('');
+            let resultado = 0;
+            let subRes = 0;
+            for (let i = 0; i < nbx.length; i++) {
+                if (digitos[nbx[i]] >= bx) {
+                    let maiorCaracter = 0;
+                    for (let j = 0; j < nbx.length; j++) {
+                        if (digitos[nbx[j]] > maiorCaracter) {
+                            maiorCaracter = digitos[nbx[j]];
+                        }
+                    }
+                    $("#baseX").val(maiorCaracter + 1);
+                    $("#resposta2").html('');
+                    bx = maiorCaracter + 1;
+                    i = 0;
+                }
+
+                subRes = digitos[nbx[i]] * Math.pow(bx, i);
+                $("#resposta2").append("'" + nbx[i] + "' x " + bx + "^<span class='d'>" + i + " </span>= " + subRes + " \n");
+                resultado += subRes;
+            }
+            $("#resposta2").append("\ntotal: <span class='d'>" + resultado + " </span> \n");
+            if (calcularProxima) {
+                calculaConversaoB10Bx(resultado, bx, false);
+            }
+
         }
     </script>
 </body>
