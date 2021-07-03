@@ -272,52 +272,43 @@ function bxby(nbx, bx, by) { // coverte da base x para a base y
     return b10bx(bxb10(nbx, bx), by);
 }
 
-function somaBinaria(b1, b2) {
+function somaDigitos(d1, d2, d3) {
+    d1 = (d1 == '1');
+    d2 = (d2 == '1');
+    // essa comparação é realizada a nivel de hardware
+    // não se cria um programa para somar dois numeros binairos, se cria um hardware
+    // referencia https://youtu.be/VBDoT8o4q00
+    return [
+        ((d1 && d2) || ((d1 ^ d2) && d3)),
+        ((d1 ^ d2) ^ d3)
+    ];
+}
+
+function somaBinariaCurta(b1, b2) {
 
     console.log((parseInt(b1, 2) + parseInt(b2, 2)).toString(2)); // soma binaria nativa, converte para inteiros, soma, converte para binario
 
     // forma "manual"
-    b1 = b1.split("");
-    b2 = b2.split("");
+    b1 = b1.toString().split("");
+    b2 = b2.toString().split("");
     let tamanho;
     if (b1.length > b2.length) {
         tamanho = b1.length;
     } else {
         tamanho = b2.length;
     }
-    let sup = 0;
     let sub = [0, 0];
     let resultado = "";
+    let a, b;
     for (var i = 1; i <= tamanho; i++) {
-        if (i <= b1.length) {
-            sub = somaDigito(sup, b1[b1.length - i]);
-        } else {
-            sub = ['0', sup];
-        }
-        sup = 0;
-        if (sub[0] == '1')
-            sup = '1'
+        a = (i <= b1.length) ? b1[b1.length - i] : 0;
+        b = (i <= b2.length) ? b2[b2.length - i] : 0;
+        sub = somaDigitos(a, b, sub[0]);
 
-        if (i <= b2.length) {
-            sub = somaDigito(sub[1], b2[b2.length - i]);
-        }
-        if (sub[0] == '1')
-            sup = '1'
         resultado = sub[1] + resultado;
     }
-    if (sup == '1') {
-        resultado = sup + resultado;
+    if (sub[0] == '1') {
+        resultado = 1 + resultado;
     }
     return resultado;
-}
-
-function somaDigito(digito1, digito2) {
-    digito1 = (digito1 == '1');
-    digito2 = (digito2 == '1');
-    // essa comparação é realizada a nivel de hardware
-    // não se cria um programa para somar dois numeros binairos, se cria um hardware
-    return [
-        (digito1 && digito2),
-        (digito1 ^ digito2) // equivalente a (!(digito1 && digito2) && (digito1 || digito2)), xor
-    ];
 }
