@@ -181,7 +181,7 @@
 
 
             $("#resposta").append("<br>" + resultado + "<br><br>");
-            $("#resposta").append("Base" + base + ": " + sinal + resultado.split("").reverse().join("") + "<br>");
+            $("#resposta").append("Base" + base + ": <span class='d'>" + sinal + resultado.split("").reverse().join("") + "<sub>" + base + "</sub><span><br>");
             if (calcularProxima) {
                 calculaConversaoBxB10(sinal + resultado.split("").reverse().join(""), base, false);
             }
@@ -200,8 +200,8 @@
             } else {
                 $("#baseX").val(bx);
             }
+            $("#resposta2").html('Número: ' + nbx + "<sub>" + bx + "</sub><br><br>");
             nbx = nbx.toString().split("").reverse();
-            $("#resposta2").html('');
             let resultado = 0;
             let subRes = 0;
             let sinal = 1;
@@ -222,10 +222,10 @@
             }
             for (let i = 0; i < nbx.length; i++) {
                 subRes = digitos[nbx[i]] * Math.pow(bx, i);
-                $("#resposta2").append("'" + nbx[i] + "' x " + bx + "^<span class='d'>" + i + " </span>= " + subRes + " \n");
+                $("#resposta2").append("<span class='d'>" + nbx[i] + "</span> * " + bx + "<sup><span class='d'>" + i + " </span></sup>= " + subRes + " \n");
                 resultado += subRes;
             }
-            $("#resposta2").append("\ntotal: <span class='d'>" + sinal * resultado + " </span> \n");
+            $("#resposta2").append("\ntotal: <span class='d'>" + sinal * resultado + "<sub>10</sub></span> \n");
             if (calcularProxima) {
                 calculaConversaoB10Bx(sinal * resultado, bx, false);
             }
