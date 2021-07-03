@@ -274,8 +274,8 @@ function bxby(nbx, bx, by) { // coverte da base x para a base y
 
 
 function halfAdder(a, b) { // referencia https://www.youtube.com/watch?v=1I5ZMmrOfnA
-    a = (a == '1');
-    b = (b == '1');
+    a = (a == 1);
+    b = (b == 1);
     return [
         (a && b),
         (a ^ b)
@@ -391,4 +391,29 @@ function subtraiBits(a, b) {
 
     return sinal + bit_sub(a, b).join("");
 
+}
+
+function bit_mumtiplie(a, b) {
+    let t = '0';
+    while (a.length > t.length)
+        t += '0';
+
+    t = t.split("");
+    for (let i = b.length - 1; i >= 0; i--) {
+        if (b[i] == 1) {
+            t = bit_sum(a, t);
+        }
+        a.push(0);
+    }
+    return t;
+}
+
+function multiplicaBits(a, b) {
+    console.log((parseInt(a, 2) * parseInt(b, 2)).toString(2)); // soma binaria nativa, converte para inteiros, soma, converte para binario
+
+    a = a.split("");
+    b = b.split("");
+
+
+    return bit_mumtiplie(a, b).join("");
 }
