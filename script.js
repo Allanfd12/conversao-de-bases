@@ -272,81 +272,123 @@ function bxby(nbx, bx, by) { // coverte da base x para a base y
     return b10bx(bxb10(nbx, bx), by);
 }
 
-function somaDigitos(d1, d2, d3) { // full adder circuit
-    d1 = (d1 == '1');
-    d2 = (d2 == '1');
-    // essa comparação é realizada a nivel de hardware
-    // não se cria um programa para somar dois numeros binairos, se cria um hardware
-    // referencia https://youtu.be/VBDoT8o4q00
+
+function halfAdder(a, b) { // referencia https://www.youtube.com/watch?v=1I5ZMmrOfnA
+    a = (a == '1');
+    b = (b == '1');
     return [
-        ((d1 && d2) || ((d1 ^ d2) && d3)),
-        ((d1 ^ d2) ^ d3)
+        (a && b),
+        (a ^ b)
     ];
 }
 
-function somaBinariaCurta(b1, b2, ignorar = false) {
+function fullAdder(a, b, c) {
+    a = (a == 1);
+    b = (b == 1);
+    let d = halfAdder(a, b);
+    let e = halfAdder(d[1], c);
 
-    console.log((parseInt(b1, 2) + parseInt(b2, 2)).toString(2)); // soma binaria nativa, converte para inteiros, soma, converte para binario
-
-    // forma "manual"
-    b1 = b1.toString().split("");
-    b2 = b2.toString().split("");
-    let tamanho;
-    if (b1.length > b2.length) {
-        tamanho = b1.length;
-    } else {
-        tamanho = b2.length;
-    }
-    let sub = [0, 0];
-    let resultado = "";
-    let a, b;
-    for (var i = 1; i <= tamanho; i++) {
-        a = (i <= b1.length) ? b1[b1.length - i] : 0;
-        b = (i <= b2.length) ? b2[b2.length - i] : 0;
-        sub = somaDigitos(a, b, sub[0]);
-
-        resultado = sub[1] + resultado;
-    }
-    if (sub[0] == '1' && !ignorar) {
-        resultado = 1 + resultado;
-    }
-    return resultado;
+    return [
+        (d[0] || e[0]) ? 1 : 0,
+        (e[1])
+    ];
 }
 
-function subtracaoBinariaCurta(b1, b2) {
+function inverter(a) {
+    a = (a == 1);
+    return (!a) ? 1 : 0;
+}
 
-    console.log((parseInt(b1, 2) - parseInt(b2, 2)).toString(2)); // soma binaria nativa, converte para inteiros, soma, converte para binario
+function inverteString(a) {
+    for (let i = 0; i < a.length; i++) {
+        a[i] = inverter(a[i]);
+    }
+    return a;
+}
+
+function bit_sum(a, b, carry = null) {
+    let size = a.length - 1;
+    let resultado = new Array();
+    let temp;
+    if (carry != null)
+        temp = fullAdder(a[size], b[size], carry);
+    else
+        temp = halfAdder(a[size], b[size]);
+
+    resultado[size] = temp[1];
+
+    for (let i = size - 1; i >= 0; i--) {
+        temp = fullAdder(a[i], b[i], temp[0]);
+        resultado[i] = temp[1];
+    }
+    if (carry != null) {
+        return [
+            temp[0],
+            resultado
+        ]
+    } else {
+        resultado.unshift(temp[0]);
+        return resultado;
+    }
+
+
+}
+
+function somaBits(a, b, carry = null) {
+    console.log((parseInt(a, 2) + parseInt(b, 2)).toString(2)); // soma binaria nativa, converte para inteiros, soma, converte para binario
+
+    let tamanho;
+    if (a.length > b.length) {
+        tamanho = a.length;
+        while (tamanho > b.length)
+            b = '0' + b;
+    } else {
+        tamanho = b.length;
+        while (tamanho > a.length)
+            a = '0' + a;
+    }
+    a = a.split("");
+    b = b.split("");
+
+    if (carry != null)
+        return bit_sum(a, b, carry);
+    else
+        return bit_sum(a, b).join("");
+
+}
+
+function bit_sub(a, b) {
+
+    b = inverteString(b).join("");
+
+    b = somaBits(b, '1', 0);
+    a = bit_sum(a, b[1], b[0]);
+
+    return a[1];
+}
+
+function subtraiBits(a, b) {
+    console.log((parseInt(a, 2) - parseInt(b, 2)).toString(2)); // soma binaria nativa, converte para inteiros, soma, converte para binario
+
     let sinal = '';
-    if (b1.length > b2.length) {
-        while (b1.length - b2.length > 0) {
-            b2 = '0' + b2;
-        }
+    let tamanho;
+    if (a.length >= b.length) {
+        tamanho = a.length;
+        while (tamanho > b.length)
+            b = '0' + b;
     } else {
         sinal = '-';
-        while (b2.length - b1.length > 0) {
-            b1 = '0' + b1;
-        }
-        let temp = b1;
-        b1 = b2;
-        b2 = temp;
-    }
-    console.log(b1, b2)
-
-    let leftzero = true;
-    b2 = b2.toString().split("");
-    let b3 = '';
-
-    for (var i = 0; i < b2.length; i++) {
-        b2[i] = (b2[i] == '1') ? '0' : '1'; // inverte os valores 
-        if (!leftzero || b2[i] != '0') {
-            leftzero = false;
-            b3 += b2[i];
-        }
+        tamanho = b.length;
+        while (tamanho > a.length)
+            a = '0' + a;
+        let temp = a;
+        a = b;
+        b = temp;
     }
 
-    b2 = somaBinariaCurta(b3, "1", true);
-    console.log(b1, b2);
-    let retorno = somaBinariaCurta(b1, b2, true);
+    a = a.split("");
+    b = b.split("");
 
-    return sinal + retorno;
+    return sinal + bit_sub(a, b).join("");
+
 }
