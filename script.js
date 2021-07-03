@@ -272,7 +272,7 @@ function bxby(nbx, bx, by) { // coverte da base x para a base y
     return b10bx(bxb10(nbx, bx), by);
 }
 
-function somaDigitos(d1, d2, d3) {
+function somaDigitos(d1, d2, d3) { // full adder circuit
     d1 = (d1 == '1');
     d2 = (d2 == '1');
     // essa comparação é realizada a nivel de hardware
@@ -284,7 +284,7 @@ function somaDigitos(d1, d2, d3) {
     ];
 }
 
-function somaBinariaCurta(b1, b2) {
+function somaBinariaCurta(b1, b2, ignorar = false) {
 
     console.log((parseInt(b1, 2) + parseInt(b2, 2)).toString(2)); // soma binaria nativa, converte para inteiros, soma, converte para binario
 
@@ -307,8 +307,46 @@ function somaBinariaCurta(b1, b2) {
 
         resultado = sub[1] + resultado;
     }
-    if (sub[0] == '1') {
+    if (sub[0] == '1' && !ignorar) {
         resultado = 1 + resultado;
     }
     return resultado;
+}
+
+function subtracaoBinariaCurta(b1, b2) {
+
+    console.log((parseInt(b1, 2) - parseInt(b2, 2)).toString(2)); // soma binaria nativa, converte para inteiros, soma, converte para binario
+    let sinal = '';
+    if (b1.length > b2.length) {
+        while (b1.length - b2.length > 0) {
+            b2 = '0' + b2;
+        }
+    } else {
+        sinal = '-';
+        while (b2.length - b1.length > 0) {
+            b1 = '0' + b1;
+        }
+        let temp = b1;
+        b1 = b2;
+        b2 = temp;
+    }
+    console.log(b1, b2)
+
+    let leftzero = true;
+    b2 = b2.toString().split("");
+    let b3 = '';
+
+    for (var i = 0; i < b2.length; i++) {
+        b2[i] = (b2[i] == '1') ? '0' : '1'; // inverte os valores 
+        if (!leftzero || b2[i] != '0') {
+            leftzero = false;
+            b3 += b2[i];
+        }
+    }
+
+    b2 = somaBinariaCurta(b3, "1", true);
+    console.log(b1, b2);
+    let retorno = somaBinariaCurta(b1, b2, true);
+
+    return sinal + retorno;
 }
