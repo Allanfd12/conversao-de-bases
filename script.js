@@ -401,6 +401,8 @@ function bit_mumtiplie(a, b) {
     t = t.split("");
     for (let i = b.length - 1; i >= 0; i--) {
         if (b[i] == 1) {
+            while (a.length > t.length)
+                t.unshift(0)
             t = bit_sum(a, t);
         }
         a.push(0);
