@@ -118,7 +118,6 @@ function calculaConversaoB10Bx(nb10 = null, bx = null, calcularProxima = true) {
 
     let resultado = "";
     let espaco = "";
-    let loop = true;
     let sinal = "";
     $("#resposta").html('');
     let digito = "0";
@@ -287,7 +286,6 @@ function fullAdder(a, b, c) {
     b = (b == 1);
     let d = halfAdder(a, b);
     let e = halfAdder(d[1], c);
-
     return [
         (d[0] || e[0]) ? 1 : 0,
         (e[1])
@@ -330,8 +328,6 @@ function bit_sum(a, b, carry = null) {
         resultado.unshift(temp[0]);
         return resultado;
     }
-
-
 }
 
 function somaBits(a, b, carry = null) {
@@ -418,4 +414,25 @@ function multiplicaBits(a, b) {
 
 
     return bit_mumtiplie(a, b).join("");
+}
+
+function binarioVirgula(nbx = null, bx = null) {
+
+    $("#resposta2").html('Número: ' + nbx + "<sub>" + bx + "</sub><br><br>");
+    let resultado = "";
+    let subRes = 0;
+    let sinal = 1;
+    let tmp = 0;
+    while (nbx > 0) {
+        subRes = nbx * bx;
+        tmp = subRes.toString().split(".");
+        $("#resposta2").append("<span class='d'>" + nbx + "</span> * " + bx + "= " + "<span class='d'>" + tmp[0] + "</span>." + (tmp.length > 1 ? tmp[1] : 0) + " \n");
+
+        resultado = resultado + caracteres[tmp[0]];
+        nbx = nbx * bx - parseInt(tmp[0], 10);
+
+    }
+    $("#resposta2").append("\n<span class='d'>" + resultado + "<sub>" + bx + "</sub></span> \n");
+
+    return resultado;
 }
